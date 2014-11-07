@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- 1. Load platform.js for polyfill support. -->
+    <script src="bower_components/platform/platform.js"></script>
+
+    <!-- 2. Use an HTML Import to bring in the element. -->
+    <link rel="import" href="bower_components/core-ajax/core-ajax.html">
+    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/core-icons/core-icons.html">
+    <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="bower_components/font-roboto/roboto.html">
+    <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html" >
+    <link rel="import" href="bower_components/paper-item/paper-item.html">
+    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
+    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-bottom.html">
+    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
+
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery.localScroll/jquery.localScroll.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="index.css">
+
+  </head>
+  <body>
+    <template is="auto-binding">
+      <nav>
+        <core-toolbar class="medium-tall" tool flex>
+
+          <paper-menu-button icon="menu">
+            <template repeat="{{items}}">
+              <paper-item>{{name}}</paper-item>
+            </template>
+          </paper-menu-button>
+
+
+          <div flex>Sijie Tian</div>
+          <paper-icon-button icon="more-vert"></paper-icon-button>
+
+          <div class="bottom fit" id="banner" horizontal layout>
+
+            <paper-tabs selected="0" flex style="max-width: 600px;" valueattr="hash" selected="{{route}}">
+              <template repeat="{{page in pages}}">
+                <paper-tab label="{{page.name}}" hash="{{page.hash}}">
+                  <a href="#{{page.hash}}"></a>
+                </paper-tab>
+              </template>
+            </paper-tabs>
+
+          </div>
+
+        </core-toolbar>
+      </nav>
+
+      <div class="scrollblock" layout  vertical>
+        <core-animated-pages  selected="0" transitions="slide-from-bottom">
+          <section layout  center-center>
+            <div>Single</div>
+          </section>
+          <section layout  center-center>
+            <div>Page</div>
+          </section>
+        </core-animated-pages>
+      </div>
+
+    </template>
+
+
+
+    <script>
+
+      scope = document.querySelector('template[is=auto-binding]');
+
+      scope.items = [
+        {name: 'About', code: 'AF'},
+        {name: 'Portfolio', code: 'AX'},
+        {name: 'Resume', code: 'AL'},
+        {name: 'Contant', code: 'DZ'}
+      ];
+    </script>
+    <script src="js/core.js" ></script>
+  </body>
+
+</html>
