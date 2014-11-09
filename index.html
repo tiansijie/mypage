@@ -15,7 +15,11 @@
     <link rel="import" href="bower_components/paper-item/paper-item.html">
     <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
     <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-bottom.html">
+    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-down.html">
+    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-up.html">
     <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
+    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
+
 
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="bower_components/jquery.localScroll/jquery.localScroll.min.js"></script>
@@ -29,39 +33,35 @@
       <nav>
         <core-toolbar class="medium-tall" tool flex>
 
-          <paper-menu-button icon="menu">
-            <template repeat="{{items}}">
-              <paper-item>{{name}}</paper-item>
-            </template>
-          </paper-menu-button>
-
-
           <div flex>Sijie Tian</div>
           <paper-icon-button icon="more-vert"></paper-icon-button>
 
-          <div class="bottom fit" id="banner" horizontal layout>
+          <flatiron-director route="{{route}}" autoHash></flatiron-director>
 
-            <paper-tabs selected="0" flex style="max-width: 600px;" valueattr="hash" selected="{{route}}">
+          <core-a11y-keys target="{{parentElement}}"
+           keys="up down left right space space+shift"
+           on-keys-pressed="{{keyHandler}}"></core-a11y-keys>
+
+          <div class="bottom fit" id="banner" horizontal layout>
+            <paper-tabs flex style="max-width: 600px;" valueattr="hash" selected="{{route}}">
               <template repeat="{{page in pages}}">
-                <paper-tab label="{{page.name}}" hash="{{page.hash}}">
+                <paper-item label="{{page.name}}" hash="{{page.hash}}">
                   <a href="#{{page.hash}}"></a>
-                </paper-tab>
+                </paper-item>
               </template>
             </paper-tabs>
-
           </div>
 
         </core-toolbar>
       </nav>
 
-      <div class="scrollblock" layout  vertical>
-        <core-animated-pages  selected="0" transitions="slide-from-bottom">
-          <section layout  center-center>
-            <div>Single</div>
-          </section>
-          <section layout  center-center>
-            <div>Page</div>
-          </section>
+      <div layout vertical>
+        <core-animated-pages id="pages"  valueattr="hash" selected="{{route}}" transitions="cross-fade">
+          <template repeat="{{page in pages}}">
+            <section hash="{{page.hash}}" layout vertical center-center>
+              <div cross-fade>{{page.name}}</div>
+            </section>
+          </template>
         </core-animated-pages>
       </div>
 
@@ -71,14 +71,45 @@
 
     <script>
 
-      scope = document.querySelector('template[is=auto-binding]');
+      var template = document.querySelector('template[is=auto-binding]');
 
-      scope.items = [
+      template.pages = [
+        {name: 'About', hash: 'ab'},
+        {name: 'Portfolio', hash: 'po'},
+        {name: 'Resume', hash: 're'},
+        {name: 'Contant', hash: 'co'},
+      ];
+
+      template.items = [
         {name: 'About', code: 'AF'},
         {name: 'Portfolio', code: 'AX'},
         {name: 'Resume', code: 'AL'},
         {name: 'Contant', code: 'DZ'}
       ];
+
+      // template.addEventListener('template-bound', function(e) {
+      //   // Use URL hash for initial route. Otherwise, use the first page.
+      //   this.route = this.route || DEFAULT_ROUTE;
+      // });
+
+      template.keyHandler = function(e, detail, sender) {
+        var pages = document.querySelector('#pages');
+
+        switch (detail.key) {
+          case 'left':
+          case 'up':
+            pages.selectPrevious();
+            break;
+          case 'right':
+          case 'down':
+            pages.selectNext();
+            break;
+          case 'space':
+            detail.shift ? pages.selectPrevious() : pages.selectNext();
+            break;
+        }
+      };
+
     </script>
     <script src="js/core.js" ></script>
   </body>
