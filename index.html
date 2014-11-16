@@ -21,9 +21,8 @@
     <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
 
 
-    <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
 
   </head>
@@ -59,11 +58,11 @@
         </core-toolbar>
       </nav>
 
-      <div layout vertical center-center>
+      <div layout vertical>
         <core-animated-pages id="pages"  valueattr="hash" selected="{{route}}" transitions="cross-fade">
           <template repeat="{{page in pages}}">
             <section hash="{{page.hash}}" layout vertical center-center>
-              <div cross-fade style="max-width:100%;">{{page.name}}</div>
+              <div cross-fade style="max-width:100%;"></div>
             </section>
           </template>
         </core-animated-pages>
@@ -78,10 +77,10 @@
       var template = document.querySelector('template[is=auto-binding]');
 
       template.pages = [
+        {name: 'Home', hash: 'ho', url: 'pages/home.html'},
         {name: 'About', hash: 'ab', url: 'pages/about.html'},
         {name: 'Portfolio', hash: 'po', url: 'pages/portfolio.html'},
-        {name: 'Resume', hash: 're', url: 'pages/about.html'},
-        {name: 'Contact', hash: 'co', url: 'pages/about.html'},
+        {name: 'Resume', hash: 're', url: 'pages/resume.html'}
       ];
 
       template.keyHandler = function(e, detail, sender) {
@@ -108,7 +107,6 @@
       };
 
       template.onResponse = function(e, detail, sender) {
-        console.log('did you called');
         var article = detail.response.querySelector('.container');
         var html = article.innerHTML;
 
