@@ -95,3 +95,23 @@ h3 {
 .each-item {
   position:relative;
 }
+
+#header-button {
+  padding:90px;
+}
+
+.main-page-btn {
+  margin-left:18px;
+  margin-top:18px;
+  -ms-transform: scale(4,4); /* IE 9 */
+  -webkit-transform: scale(4,4); /* Chrome, Safari, Opera */
+  transform: scale(4,4);
+}
+
+.ahref:hover {
+  text-decoration:none;
+}
+
+.ahref:active {
+  text-decoration:none;
+}
