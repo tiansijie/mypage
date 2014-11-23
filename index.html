@@ -118,14 +118,17 @@
       };
 
       addEventListener('core-header-transform', function(e) {
-        console.log('do yo changes?');
-      });
-      //
-      // var scrollHandler=function(event) {
-      //   var scroller = event.detail.target;
-      //   console.log(scroller.scrollTop);
-      // }
+        var d = e.detail;
+        var mypageTitle = $('#mypage-title');
 
+        if(d.y > 40) {
+          $("#mypage-title").css({visibility: "hidden"});
+        }
+        else {
+          $("#mypage-title").css({visibility: "visible"});
+        }
+      });
+      
     </script>
 
   </body>
