@@ -15,6 +15,7 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  height: 100%;
 }
 
 html, body {
@@ -126,4 +127,8 @@ h3 {
 
 .row {
   margin: 20px;
+}
+
+#mypage-title {
+
 }

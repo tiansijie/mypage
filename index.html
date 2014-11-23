@@ -23,7 +23,7 @@
     <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
     <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
-
+    <link rel="import" href="bower_components/core-scroll-header-panel/core-scroll-header-panel.html">
 
     <script src="lib/three.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -34,9 +34,9 @@
     <link href="css/monosocialiconfont.css" rel="stylesheet">
 
   </head>
-  <body fullbleed vertical layout unresolved>
+  <body fullbleed layout vertical unresolved>
     <template is="auto-binding">
-      <core-header-panel flex mode="waterfall-tall" tallclass="medium-tall">
+      <core-scroll-header-panel condenses flex>
 
         <core-ajax id="ajax" auto url="{{selectedPage.page.url}}" handleAs="document"
                    on-core-response="{{onResponse}}"></core-ajax>
@@ -46,10 +46,10 @@
          on-keys-pressed="{{keyHandler}}">
         </core-a11y-keys>
 
-        <core-toolbar>
-          <div flex>
+        <core-toolbar id="mypage-toolbar" class="medium-tall">
+          <span id="mypage-title">
             Sijie Tian
-          </div>
+          </span>
 
           <div class="bottom fit" id="banner" horizontal layout>
             <paper-tabs flex style="max-width: 600px;" valueattr="hash" selected="{{route}}" selectedModel="{{selectedPage}}" on-click="{{ajaxLoad}}">
@@ -62,7 +62,7 @@
           </div>
         </core-toolbar>
 
-        <div layout vertical>
+        <div layout vertical class="content">
           <core-animated-pages id="pages"  valueattr="hash" selected="{{route}}" transitions="cross-fade">
             <template repeat="{{page in pages}}">
               <section hash="{{page.hash}}" layout vertical center-center>
@@ -73,7 +73,7 @@
           </core-animated-pages>
         </div>
 
-      </core-header-panel>
+      </core-scroll-header-panel>
     </template>
 
     <script>
@@ -104,7 +104,6 @@
             break;
         }
       };
-      //var ajax = document.querySelector('#ajax');
 
       template.ajaxLoad = function(e, detail, sender) {
         e.preventDefault(); // prevent link navigation.
@@ -117,6 +116,15 @@
         var pages = document.querySelector('#pages');
         this.injectBoundHTML(html, pages.selectedItem.firstElementChild);
       };
+
+      addEventListener('core-header-transform', function(e) {
+        console.log('do yo changes?');
+      });
+      //
+      // var scrollHandler=function(event) {
+      //   var scroller = event.detail.target;
+      //   console.log(scroller.scrollTop);
+      // }
 
     </script>
 

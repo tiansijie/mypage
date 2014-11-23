@@ -77,7 +77,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <core-toolbar class="tall">
 
       <core-icon-button icon="arrow-back"></core-icon-button>
-      <div flex></div>
+      <div flex>aaaaaa!</div>
       <core-icon-button icon="search"></core-icon-button>
       <core-icon-button icon="more-vert"></core-icon-button>
       <div class="bottom indent title">Title</div>
@@ -100,6 +100,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var d = e.detail;
       var m = d.height - d.condensedHeight;
       var scale = Math.max(0.75, (m - d.y) / (m / 0.25)  + 0.75);
+
+      console.log('you transform !!!!', d)
+
       titleStyle.transform = titleStyle.webkitTransform =
           'scale(' + scale + ') translateZ(0)';
     });

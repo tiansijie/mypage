@@ -153,7 +153,7 @@ $( document ).ready(function() {
 
   function render() {
 
-    cube.rotation.y += 0.05;
+    //cube.rotation.y += 0.05;
 
     var delta = 0.75 * clock.getDelta();
 
