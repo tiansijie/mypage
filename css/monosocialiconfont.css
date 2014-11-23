@@ -22,6 +22,7 @@
     -ms-font-smoothing: antialiased;
     -o-font-smoothing: antialiased;
     font-smoothing: antialiased;
+    font-size: 60px;
 }
 
 a.symbol:before {

@@ -1,7 +1,7 @@
 body {
   font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
   margin: 0;
-  padding: 24px;
+  padding: 0px;
   color: #fff;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -18,19 +18,16 @@ body {
 }
 
 html, body {
-      height: 100%;
-      margin: 0;
+  height: 100%;
+  margin: 0;
 }
 
- .toolbar {
-      color: #fff;
-      font-size: 16px;
-      padding: 12px;
-    }
-
-    .toolbar-1 {
-      background-color: #3b78e7;
-    }
+.toolbar {
+  color: #fff;
+  font-size: 16px;
+  padding: 12px;
+  overflow: auto;
+}
 
 paper-tabs, core-toolbar {
   background-color: #00bcd4;
@@ -40,6 +37,11 @@ paper-tabs, core-toolbar {
 
 core-toolbar paper-tabs {
   box-shadow: none;
+}
+
+core-header-panel {
+  height: 100%;
+  overflow: auto;
 }
 
 paper-tabs[noink][nobar] paper-tab.core-selected {
@@ -88,7 +90,7 @@ h3 {
 }
 
 #about-page {
-  top: 40px;
+  top: 30px;
 }
 
 
@@ -97,15 +99,17 @@ h3 {
 }
 
 #header-button {
-  padding:90px;
+  padding:10px;
 }
 
 .main-page-btn {
   margin-left:18px;
   margin-top:18px;
-  -ms-transform: scale(4,4); /* IE 9 */
-  -webkit-transform: scale(4,4); /* Chrome, Safari, Opera */
-  transform: scale(4,4);
+}
+
+
+#webgl-container {
+  position:relative;
 }
 
 .ahref:hover {
@@ -114,4 +118,12 @@ h3 {
 
 .ahref:active {
   text-decoration:none;
+}
+
+#banner {
+  text-transform: uppercase;
+}
+
+.row {
+  margin: 20px;
 }

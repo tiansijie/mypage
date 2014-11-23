@@ -22,7 +22,11 @@
     <link rel="import" href="bower_components/core-animated-pages/transitions/slide-up.html">
     <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
     <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
+    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
 
+
+    <script src="lib/three.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
     <link href="css/style.css" rel="stylesheet">
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -30,23 +34,23 @@
     <link href="css/monosocialiconfont.css" rel="stylesheet">
 
   </head>
-  <body>
-
+  <body fullbleed vertical layout unresolved>
     <template is="auto-binding">
+      <core-header-panel flex mode="waterfall-tall" tallclass="medium-tall">
 
-      <core-ajax id="ajax" auto url="{{selectedPage.page.url}}" handleAs="document"
-                 on-core-response="{{onResponse}}"></core-ajax>
+        <core-ajax id="ajax" auto url="{{selectedPage.page.url}}" handleAs="document"
+                   on-core-response="{{onResponse}}"></core-ajax>
 
-      <core-a11y-keys target="{{parentElement}}"
-       keys="up down left right space space+shift"
-       on-keys-pressed="{{keyHandler}}">
-      </core-a11y-keys>
+        <core-a11y-keys target="{{parentElement}}"
+         keys="up down left right space space+shift"
+         on-keys-pressed="{{keyHandler}}">
+        </core-a11y-keys>
 
+        <core-toolbar>
+          <div flex>
+            Sijie Tian
+          </div>
 
-      <nav>
-        <core-toolbar class="medium-tall" tool flex>
-
-          <div flex>Sijie Tian</div>
           <div class="bottom fit" id="banner" horizontal layout>
             <paper-tabs flex style="max-width: 600px;" valueattr="hash" selected="{{route}}" selectedModel="{{selectedPage}}" on-click="{{ajaxLoad}}">
               <template repeat="{{page in pages}}">
@@ -56,23 +60,21 @@
               </template>
             </paper-tabs>
           </div>
-
         </core-toolbar>
-      </nav>
 
-      <div layout vertical>
-        <core-animated-pages id="pages"  valueattr="hash" selected="{{route}}" transitions="cross-fade">
-          <template repeat="{{page in pages}}">
-            <section hash="{{page.hash}}" layout vertical center-center>
-              <div cross-fade style="max-width:100%;"></div>
-            </section>
-          </template>
-        </core-animated-pages>
-      </div>
+        <div layout vertical>
+          <core-animated-pages id="pages"  valueattr="hash" selected="{{route}}" transitions="cross-fade">
+            <template repeat="{{page in pages}}">
+              <section hash="{{page.hash}}" layout vertical center-center>
+                <div cross-fade style="max-width:100%;">
+                </div>
+              </section>
+            </template>
+          </core-animated-pages>
+        </div>
 
+      </core-header-panel>
     </template>
-
-
 
     <script>
       "use strict";
@@ -117,7 +119,7 @@
       };
 
     </script>
-    <script src="js/core.js" ></script>
+
   </body>
 
 </html>
