@@ -1,121 +1,130 @@
 $( document ).ready(function() {
 
-  var SCREEN_WIDTH = window.innerWidth;
-  var SCREEN_HEIGHT = window.innerHeight;
-  var FLOOR = -250;
+  var container, stats;
 
-  var container,stats;
+  var camera, scene, renderer;
 
-  var camera, scene;
-  var renderer;
-
-  var mesh, helper;
+  var objects, controller;
 
   var mouseX = 0, mouseY = 0;
 
   var windowHalfX = window.innerWidth / 2;
   var windowHalfY = window.innerHeight / 2;
 
-  var clock = new THREE.Clock();
+  var time;
 
-  document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+  var propertyGUI;
+
+  var material;
+
+
+  var BRDFFragmentShader = {};
+
+  var currentFragShader;
+
+  var startTime = new Date();
 
   init();
   animate();
 
+
   function init() {
 
-    container = document.getElementById( 'webgl-container' );
+    propertyGUI = new property();
 
-    camera = new THREE.PerspectiveCamera( 30, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
-    camera.position.z = 2200;
+    initShader();
+
+    container = document.getElementById('webgl-container');
+    //document.body.appendChild(container);
+
+
+    camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 5500 );
+    camera.position.z = 10;
+    camera.position.x = 10;
+    camera.position.y = 13;
+    camera.lightDir = new THREE.Vector3(-1,-1,-1);
+    camera.lightDir.normalize();
 
     scene = new THREE.Scene();
 
-    //scene.fog = new THREE.Fog( 0xffffff, 2000, 10000 );
+    var light = new THREE.PointLight( 0xffffff, 1, 100 );
+    light.position.set( 100, 100, 100 );
+    scene.add(light);
 
-    scene.add( camera );
+    var cubeMapTex = initiCubeMap();
 
-    var geometry = new THREE.BoxGeometry( 200, 200, 200 );
-
-    for ( var i = 0; i < geometry.faces.length; i += 2 ) {
-
-      var hex = Math.random() * 0xffffff;
-      geometry.faces[ i ].color.setHex( hex );
-      geometry.faces[ i + 1 ].color.setHex( hex );
-
-    }
-
-    var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } );
-
-    cube = new THREE.Mesh( geometry, material );
-    cube.position.y = 150;
-    scene.add( cube );
-
-    var ambient = new THREE.AmbientLight( 0x222222 );
-    scene.add( ambient );
+    var boxGeo = new THREE.BoxGeometry(1,1,1);
 
 
-    var light = new THREE.DirectionalLight( 0xebf3ff, 1.6 );
-    light.position.set( 0, 140, 500 ).multiplyScalar( 1.1 );
-    scene.add( light );
+    material = new THREE.ShaderMaterial( {
+      uniforms: {
+        u_lightColor: { type: "v3", value: new THREE.Vector3(light.color.r, light.color.g, light.color.b)  },
+        u_lightDir: { type: "v3", value: camera.lightDir },
+        u_lightPos: { type: "v3", value: light.position},
+        u_viewPos: {type: "v3", value: camera.position },
+        u_diffuseColor: {type: "v3", value: new THREE.Vector3(0.9, 0.9, 0.9)},
+        u_ambientColor: {type: "v3", value: new THREE.Vector3(0.1, 0.1, 0.1)},
+        u_roughness: {type: "f", value: 0.21 },
+        u_fresnel: {type: "f", value: 5.1 },
+        u_alpha: {type: "f", value: 0.21*0.21 },
+        u_tCube: {type: "t", value: cubeMapTex },
+        u_time: {type: "f", value: 0.0},
+        u_texture: {type: "t", value: null },
+        u_isTexture: {type: "i", value: 0 }
+      },
+      vertexShader: document.getElementById( 'vertexShader' ).textContent,
+      fragmentShader: currentFragShader,
+    } );
 
-    light.castShadow = true;
 
-    light.shadowMapWidth = 1024;
-    light.shadowMapHeight = 2048;
 
-    var d = 390;
+    var loader = new THREE.JSONLoader();
 
-    light.shadowCameraLeft = -d;
-    light.shadowCameraRight = d;
-    light.shadowCameraTop = d * 1.5;
-    light.shadowCameraBottom = -d;
+    loader.load('../objects/spaceship/spaceship.js', function(geometry, materials) {
 
-    light.shadowCameraFar = 3500;
-    //light.shadowCameraVisible = true;
+      $.getJSON('../objects/spaceship/spaceship.js', function(jsonData) {
 
-    //
+        for (var i = 0; i < materials.length; ++i) {
+          if (jsonData.materials[i].roughness && jsonData.materials[i].fresnel) {
+            var mat = materials[i];
+            materials[i] = material.clone();
 
-    var light = new THREE.DirectionalLight( 0x497f13, 1 );
-    light.position.set( 0, -1, 0 );
-    scene.add( light );
+            if(mat.map) {
+              materials[i].uniforms['u_texture'].value = mat.map;
+              materials[i].uniforms['u_isTexture'].value = 1;
+            }
 
-    // RENDERER
+            var alpha = jsonData.materials[i].roughness * jsonData.materials[i].roughness
+            materials[i].uniforms['u_roughness'].value = jsonData.materials[i].roughness;
+            materials[i].uniforms['u_fresnel'].value = jsonData.materials[i].fresnel;
+            materials[i].uniforms['u_alpha'].value = alpha;
+            materials[i].uniforms['u_diffuseColor'].value = mat.color;
+          }
+        }
+      });
+      //mats = materials;
+      var mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+      mesh.position.set(0, 4, 0);
+      scene.add(mesh);
+    });
 
-    renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-    renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
-    renderer.domElement.style.position = "relative";
 
-    //renderer.setClearColor( scene.fog.color, 1 );
+    var sphereMesh = new THREE.Mesh(new THREE.SphereGeometry( 1, 32, 32 ), material);
+    //var sphereMesh = new THREE.Mesh(new THREE.SphereGeometry( 1, 32, 32 ), new THREE.MeshPhongMaterial());
+    sphereMesh.position.y += 4;
+    sphereMesh.scale.set(0.1, 0.1, 0.1);
+    scene.add(sphereMesh);
 
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true } );
+    //renderer.setClearColor( 0xffffff, 1 );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    ///renderer.gammaInput = true;
+    //renderer.gammaOutput = true;
     container.appendChild( renderer.domElement );
 
-    renderer.gammaInput = true;
-    renderer.gammaOutput = true;
+    controller = new THREE.OrbitControls(camera, renderer.domElement);
 
-    renderer.shadowMapEnabled = true;
-
-
-    // STATS
-
-    // stats = new Stats();
-    // container.appendChild( stats.domElement );
-
-    //
-
-    // var loader = new THREE.JSONLoader();
-    // loader.load( "models/skinned/knight.js", function ( geometry, materials ) {
-    //
-    //   createScene( geometry, materials, 0, FLOOR, -300, 60 )
-    //
-    // } );
-
-    // GUI
-
-  //  initGUI();
-
-    //
+    container.appendChild( renderer.domElement );
 
     window.addEventListener( 'resize', onWindowResize, false );
 
@@ -129,18 +138,10 @@ $( document ).ready(function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize( window.innerWidth, window.innerHeight - 120 );
 
   }
 
-  function onDocumentMouseMove( event ) {
-
-    mouseX = ( event.clientX - windowHalfX );
-    mouseY = ( event.clientY - windowHalfY );
-
-  }
-
-  //
 
   function animate() {
 
@@ -149,21 +150,102 @@ $( document ).ready(function() {
     render();
     //stats.update();
 
+    material.uniforms['u_time'].value = (new Date() - startTime) * 0.001;
   }
 
   function render() {
-
-    //cube.rotation.y += 0.05;
-
-    var delta = 0.75 * clock.getDelta();
-
-    camera.position.x += ( mouseX - camera.position.x ) * .05;
-    camera.position.y = THREE.Math.clamp( camera.position.y + ( - mouseY - camera.position.y ) * .05, 0, 1000 );
-
-    camera.lookAt( scene.position );
-
     renderer.render( scene, camera );
+  }
+
+
+  function property() {
+    this.roughness = 0.21;
+    this.fresnel = 10.0;
+    this.Normal_Dirstribution_Function = 'BlinnPhong';
+    this.Geometric_Shadowing = 'CookTorrance';
+    this.Cube_Map_Name = 'chapel/';
+  }
+
+
+  function addUI() {
+    var datGui = new dat.GUI();
+    for(var i = 0; i < mats.length; ++i) {
+      propertyGUI[i] = new property();
+      datGui.add(propertyGUI[i], 'roughness', 0.01, 1.0);
+      datGui.add(propertyGUI[i], 'fresnel', 1.0, 20.0);
+      datGui.add(propertyGUI[i], 'Normal_Dirstribution_Function', ['BlinnPhong', 'Beckmann', 'GGX']);
+      datGui.add(propertyGUI[i], 'Geometric_Shadowing', ['Implicit', 'CookTorrance', 'Kelemen', 'Beckmann', 'Schlick_Beckmann']);
+    }
+  }
+
+
+  window.onload = function() {
+
+    function roughnessCallback(value) {
+      material.uniforms['u_roughness'].value = propertyGUI.roughness;
+      material.uniforms['u_alpha'].value = propertyGUI.roughness * propertyGUI.roughness;
+    }
+
+    function fresnelCallback(value) {
+      material.uniforms['u_fresnel'].value = propertyGUI.fresnel;
+    }
 
   }
+
+
+  function initShader() {
+    BRDFFragmentShader.init = document.getElementById( 'fragmentShader_param' ).textContent;
+
+    BRDFFragmentShader.N = [];
+    BRDFFragmentShader.N['BlinnPhong'] = document.getElementById( 'NDFBlinnPhong' ).textContent;
+    BRDFFragmentShader.N['Beckmann'] = document.getElementById( 'NDFBeckmann' ).textContent;
+    BRDFFragmentShader.N['GGX'] = document.getElementById( 'NDFGGX' ).textContent;
+
+    BRDFFragmentShader.G = [];
+    BRDFFragmentShader.G['Implicit'] = document.getElementById( 'GImplicit' ).textContent;
+    BRDFFragmentShader.G['CookTorrance'] = document.getElementById( 'GCookTorrance' ).textContent;
+    BRDFFragmentShader.G['Kelemen'] = document.getElementById( 'GKelemen' ).textContent;
+    BRDFFragmentShader.G['Beckmann'] = document.getElementById( 'GBeckmann' ).textContent;
+    BRDFFragmentShader.G['Schlick_Beckmann'] = document.getElementById( 'GSchlick_Beckmann' ).textContent;
+
+    BRDFFragmentShader.main = document.getElementById( 'fragmentShader_main' ).textContent;
+
+    currentFragShader = BRDFFragmentShader.init
+    + BRDFFragmentShader.N['BlinnPhong']
+    + BRDFFragmentShader.G['CookTorrance']
+    + BRDFFragmentShader.main;
+  }
+
+
+  function initiCubeMap() {
+
+    var urlPrefix = "../cubemap/chapel/";
+    //urlPrefix += propertyGUI.Cube_Map_Name + '/';
+    //urlPrefix += "guangzhou/";
+
+    var urls = [ urlPrefix + "posx.jpg", urlPrefix + "negx.jpg",
+    urlPrefix + "posy.jpg", urlPrefix + "negy.jpg",
+    urlPrefix + "posz.jpg", urlPrefix + "negz.jpg" ];
+    var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+    textureCube.format = THREE.RGBFormat;
+
+    var shader = THREE.ShaderLib["cube"];
+    shader.uniforms['tCube'].value = textureCube;   // textureCube has been init before
+    var material = new THREE.ShaderMaterial({
+      fragmentShader    : shader.fragmentShader,
+      vertexShader  : shader.vertexShader,
+      uniforms  : shader.uniforms,
+      depthWrite: false,
+      side: THREE.BackSide
+    });
+
+    // build the skybox Mesh
+    var skyboxMesh = new THREE.Mesh( new THREE.BoxGeometry( 200, 200, 200 ), material );
+    // add it to the scene
+    //scene.add( skyboxMesh );
+
+    return textureCube;
+  }
+
 
 });

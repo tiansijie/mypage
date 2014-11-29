@@ -128,3 +128,8 @@ h3 {
 .row {
   margin: 20px;
 }
+
+#header-button{
+  margin-left: auto;
+  margin-right: auto;
+}
