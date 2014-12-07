@@ -31,7 +31,7 @@ html, body {
 }
 
 paper-tabs, core-toolbar {
-  background-color: #00bcd4;
+  background-color: #003366;
   color: #fff;
   box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
 }
@@ -45,22 +45,12 @@ core-header-panel {
   overflow: auto;
 }
 
-paper-tabs[noink][nobar] paper-tab.core-selected {
-  color: #ffff8d;
+paper-tabs paper-tab.core-selected {
+  color: #0941E8;
 }
 
-paper-tabs.transparent-teal {
-  background-color: transparent;
-  color: #00bcd4;
-  box-shadow: none;
-}
-
-paper-tabs.transparent-teal::shadow #selectionBar {
-  background-color: #00bcd4;
-}
-
-paper-tabs.transparent-teal paper-tab::shadow #ink {
-  color: #00bcd4;
+paper-tabs::shadow #selectionBar {
+  background-color: #CCCCCC;
 }
 
 paper-icon-button {
@@ -133,3 +123,4 @@ h3 {
   margin-left: auto;
   margin-right: auto;
 }
+

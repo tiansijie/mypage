@@ -32,6 +32,9 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
     <link href="css/monosocialiconfont.css" rel="stylesheet">
+    <link rel='stylesheet' href="css/prettyPhoto.css" type='text/css'>
+
+   
 
   </head>
   <body fullbleed layout vertical unresolved>
@@ -75,7 +78,15 @@
 
       </core-scroll-header-panel>
     </template>
+    <script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.prettyPhoto.js"></script>
 
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function(){
+        $("a[rel^='prettyPhoto']").prettyPhoto();
+      });
+    </script>
+    
     <script>
       "use strict";
       var template = document.querySelector('template[is=auto-binding]');
@@ -130,6 +141,7 @@
 
     </script>
 
+  
   </body>
 
 </html>
