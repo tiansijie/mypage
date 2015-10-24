@@ -1,147 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- 1. Load platform.js for polyfill support. -->
-    <script src="bower_components/platform/platform.js"></script>
-
-    <!-- 2. Use an HTML Import to bring in the element. -->
-    <link rel="import" href="bower_components/core-ajax/core-ajax.html">
-    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
-    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
-    <link rel="import" href="bower_components/core-icons/core-icons.html">
-    <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-    <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
-    <link rel="import" href="bower_components/font-roboto/roboto.html">
-    <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html" >
-    <link rel="import" href="bower_components/paper-item/paper-item.html">
-    <link rel="import" href="bower_components/paper-fab/paper-fab.html">
-    <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
-    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
-    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-bottom.html">
-    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-down.html">
-    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-up.html">
-    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html">
-    <link rel="import" href="bower_components/core-a11y-keys/core-a11y-keys.html">
-    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
-    <link rel="import" href="bower_components/core-scroll-header-panel/core-scroll-header-panel.html">
-
-    <script src="lib/three.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="css/index.css" rel="stylesheet">
-    <link href="css/monosocialiconfont.css" rel="stylesheet">
-    <link rel='stylesheet' href="css/prettyPhoto.css" type='text/css'>
-
-   
-
+  <link href="css/index.css" rel="stylesheet">
+  <link href="css/icon/animation.css" rel="stylesheet">
+  <link href="css/icon/sjt-font-icon-codes.css" rel="stylesheet">
+  <link href="css/icon/sjt-font-icon-embedded.css" rel="stylesheet">
+  <link href="css/icon/sjt-font-icon.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
   </head>
-  <body fullbleed layout vertical unresolved>
-    <template is="auto-binding">
-      <core-scroll-header-panel condenses flex>
-
-        <core-ajax id="ajax" auto url="{{selectedPage.page.url}}" handleAs="document"
-                   on-core-response="{{onResponse}}"></core-ajax>
-
-        <core-a11y-keys target="{{parentElement}}"
-         keys="up down left right space space+shift"
-         on-keys-pressed="{{keyHandler}}">
-        </core-a11y-keys>
-
-        <core-toolbar id="mypage-toolbar" class="medium-tall">
-          <span id="mypage-title">
-            Sijie Tian
-          </span>
-
-          <div class="bottom fit" id="banner" horizontal layout>
-            <paper-tabs flex style="max-width: 600px;" valueattr="hash" selected="{{route}}" selectedModel="{{selectedPage}}" on-click="{{ajaxLoad}}">
-              <template repeat="{{page in pages}}">
-                <paper-item label="{{page.name}}" hash="{{page.hash}}">
-                  <a href="{{page.url}}"></a>
-                </paper-item>
-              </template>
-            </paper-tabs>
+  <body>
+    <div class="container">
+        <div class="center-block">
+          <div class="name-container">
+            Sijie Tian/田思劼
           </div>
-        </core-toolbar>
-
-        <div layout vertical class="content">
-          <core-animated-pages id="pages"  valueattr="hash" selected="{{route}}" transitions="cross-fade">
-            <template repeat="{{page in pages}}">
-              <section hash="{{page.hash}}" layout vertical center-center>
-                <div cross-fade style="max-width:100%;">
-                </div>
-              </section>
-            </template>
-          </core-animated-pages>
+          <div id="header-button">
+            <a href='https://github.com/tiansijie' class='sjt-icon sjt-icon-github-squared'></a>
+            <a href='https://twitter.com/sijietian' class='sjt-icon sjt-icon-twitter-squared'></a>
+            <a href='http://instagram.com/tiansijie' class='sjt-icon sjt-icon-instagram'></a>
+            <a href='https://www.linkedin.com/pub/sijie-tian/58/63a/552' class='sjt-icon sjt-icon-linkedin-squared'></a>
+            <a href='http://weibo.com/danielten' class='sjt-icon sjt-icon-weibo'></a>
+            <a href='https://www.facebook.com/daniel.tian.94' class='sjt-icon sjt-icon-facebook-squared'></a>
+          </div>
         </div>
-
-      </core-scroll-header-panel>
-    </template>
-    <script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
-    <script type="text/javascript" src="js/jquery.prettyPhoto.js"></script>
-
-    <script type="text/javascript" charset="utf-8">
-      $(document).ready(function(){
-        $("a[rel^='prettyPhoto']").prettyPhoto();
-      });
-    </script>
-    
-    <script>
-      "use strict";
-      var template = document.querySelector('template[is=auto-binding]');
-
-      template.pages = [
-        {name: 'Home', hash: 'ho', url: 'pages/home.html'},
-        {name: 'About', hash: 'ab', url: 'pages/about.html'},
-        {name: 'Portfolio', hash: 'po', url: 'pages/portfolio.html'}
-      ];
-
-      template.keyHandler = function(e, detail, sender) {
-        var pages = document.querySelector('#pages');
-
-        switch (detail.key) {
-          case 'left':
-          case 'up':
-            pages.selectPrevious();
-            break;
-          case 'right':
-          case 'down':
-            pages.selectNext();
-            break;
-          case 'space':
-            detail.shift ? pages.selectPrevious() : pages.selectNext();
-            break;
-        }
-      };
-
-      template.ajaxLoad = function(e, detail, sender) {
-        e.preventDefault(); // prevent link navigation.
-      };
-
-      template.onResponse = function(e, detail, sender) {
-        var article = detail.response.querySelector('.container');
-        var html = article.innerHTML;
-
-        var pages = document.querySelector('#pages');
-        this.injectBoundHTML(html, pages.selectedItem.firstElementChild);
-      };
-
-      addEventListener('core-header-transform', function(e) {
-        var d = e.detail;
-        var mypageTitle = $('#mypage-title');
-
-        if(d.y > 40) {
-          $("#mypage-title").css({visibility: "hidden"});
-        }
-        else {
-          $("#mypage-title").css({visibility: "visible"});
-        }
-      });
-
-    </script>
-
-  
+    </div>
   </body>
-
 </html>

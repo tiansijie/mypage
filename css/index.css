@@ -18,6 +18,40 @@ body {
   height: 100%;
 }
 
+.container {
+  display: block;
+  padding-top: 200px;
+}
+
+.sjt-icon {
+  font-size: 45px;
+}
+
+a{
+  color: #963019;
+  text-decoration:none;
+}
+a:hover {
+  color: #667467;
+  text-decoration:none;
+}
+
+.center-block {
+  top: 150px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.name-container {
+  color: #f6f1ed;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  padding-bottom: 50px;
+}
+
+#header-button {
+  text-align: center;
+}
 html, body {
   height: 100%;
   margin: 0;
@@ -123,4 +157,3 @@ h3 {
   margin-left: auto;
   margin-right: auto;
 }
-
